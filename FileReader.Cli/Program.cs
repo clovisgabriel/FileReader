@@ -45,8 +45,14 @@ class Program
 
         Console.WriteLine("\n----------------------------------------------\n");
 
-        Console.WriteLine("7. JSON FILE READER (v7)");
+        Console.WriteLine("7. JSON FILE READING (v7)");
         TestJsonFile(jsonFile);
+
+        Console.WriteLine("\n----------------------------------------------\n");
+
+        Console.WriteLine("8. ENCRYPTED JSON FILE READING (v8)");
+
+        TestEncryptedJson(jsonFile);
 
         Console.WriteLine("\n----------------------------------------------\n");
     }
@@ -128,5 +134,16 @@ class Program
         var result = reader.Read(path);
 
         Console.WriteLine(result);
+    }
+
+    // V8 - Test an encrypted json file
+    static void TestEncryptedJson(string path)
+    {
+        IFileReader reader =
+            new EncryptedFileReader(
+                new JsonFileReader(),
+                new ReverseEncryptionStrategy());
+
+        Console.WriteLine(reader.Read(path));
     }
 }
