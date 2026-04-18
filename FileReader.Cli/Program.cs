@@ -25,22 +25,22 @@ class Program
 
         Console.WriteLine("\n----------------------------------------------\n");
 
-        Console.WriteLine("3. ENCRYPTED TEXT FILE (v3)");
+        Console.WriteLine("3. ENCRYPTED TEXT FILE READING (v3)");
         TestEncryptedText(encryptedFile);
 
         Console.WriteLine("\n----------------------------------------------\n");
 
-        Console.WriteLine("4. XML + SECURITY (AUTHORIZED, USER ROLE = ADMIN) (v4)");
+        Console.WriteLine("4. XML FILE READING + SECURITY (AUTHORIZED, USER ROLE = ADMIN) (v4)");
         TestXmlWithSecurity(xmlFile);
 
         Console.WriteLine("\n----------------------------------------------\n");
 
-        Console.WriteLine("5. XML + ENCRYPTION + SECURITY (AUTHORIZED, USER ROLE = ADMIN) (v5)");
+        Console.WriteLine("5. XML FILE READING + ENCRYPTION + SECURITY (AUTHORIZED, USER ROLE = ADMIN) (v5)");
         TestXmlEncryptedWithSecurity(xmlFile);
 
         Console.WriteLine("\n----------------------------------------------\n");
 
-        Console.WriteLine("6. TEXT + SECURITY (v6)");
+        Console.WriteLine("6. TEXT FILE READING + SECURITY (v6)");
         TestTextFileWithSecurity(textFile);
 
         Console.WriteLine("\n----------------------------------------------\n");
@@ -53,6 +53,11 @@ class Program
         Console.WriteLine("8. ENCRYPTED JSON FILE READING (v8)");
 
         TestEncryptedJson(jsonFile);
+
+        Console.WriteLine("\n----------------------------------------------\n");
+
+        Console.WriteLine("9. JSON FILE READING + SECURITY (AUTHORIZED, USER ROLE = ADMIN) (v9)");
+        TestSecuredJson(jsonFile);
 
         Console.WriteLine("\n----------------------------------------------\n");
     }
@@ -143,6 +148,17 @@ class Program
             new EncryptedFileReader(
                 new JsonFileReader(),
                 new ReverseEncryptionStrategy());
+
+        Console.WriteLine(reader.Read(path));
+    }
+
+    // V9 - Test a json file with security
+    static void TestSecuredJson(string path)
+    {
+        IFileReader reader =
+            new SecureFileReader(
+                new JsonFileReader(),
+                UserRole.Admin); // Change UserRole to see unauthorized access exception. 
 
         Console.WriteLine(reader.Read(path));
     }
