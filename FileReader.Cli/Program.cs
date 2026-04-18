@@ -1,165 +1,93 @@
 ﻿using FileReader.Core;
 
+namespace FileReader.Cli;
+
+/// <summary>
+/// Entry point for the File Reader CLI application.
+/// </summary>
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
-        Console.WriteLine("###### File Reader ######\n\n");
+        while (true)
+        {
+            Console.WriteLine("\n######### File Reader #########");
 
-        // Get base folder of running application
-        var basePath = AppContext.BaseDirectory;
+            Console.WriteLine("Select file type:");
+            Console.WriteLine("1 - Text");
+            Console.WriteLine("2 - XML");
+            Console.WriteLine("3 - JSON");
+            Console.WriteLine("0 - Exit\n");
 
-        // Sample files
-        string textFile = Path.Combine(basePath, "Files", "textFile.txt");
-        string xmlFile = Path.Combine(basePath, "Files", "xmlFile.xml");
-        string encryptedFile = Path.Combine(basePath, "Files", "encryptedFile.txt");
-        string jsonFile = Path.Combine(basePath, "Files", "jsonFile.json");
+            var type = Console.ReadLine();
 
-        Console.WriteLine("1. TEXT FILE READING (v1)");
-        TestTextFile(textFile);
+            if (type == "0")
+                break;
 
-        Console.WriteLine("\n----------------------------------------------\n");
+            Console.WriteLine("\nUse encryption? (y/n)");
+            bool useEncryption = Console.ReadLine()?.Trim().ToLower() == "y";
 
-        Console.WriteLine("2. XML FILE READING (v2)");
-        TestXml(xmlFile);
+            Console.WriteLine("\nUse role-based security? (y/n)");
+            bool useSecurity = Console.ReadLine()?.Trim().ToLower() == "y";
 
-        Console.WriteLine("\n----------------------------------------------\n");
+            UserRole role = UserRole.User;
 
-        Console.WriteLine("3. ENCRYPTED TEXT FILE READING (v3)");
-        TestEncryptedText(encryptedFile);
+            if (useSecurity)
+            {
+                Console.WriteLine("Enter role (Admin/User):");
 
-        Console.WriteLine("\n----------------------------------------------\n");
+                if (!Enum.TryParse<UserRole>(Console.ReadLine(), true, out role))
+                {
+                    Console.WriteLine("Invalid role. Defaulting to User.");
+                    role = UserRole.User;
+                }
+            }
 
-        Console.WriteLine("4. XML FILE READING + SECURITY (AUTHORIZED, USER ROLE = ADMIN) (v4)");
-        TestXmlWithSecurity(xmlFile);
+            Console.WriteLine("\nEnter the full file path (e.g., C:\\folder\\file.txt):\n");
+            var path = Console.ReadLine();
 
-        Console.WriteLine("\n----------------------------------------------\n");
+            try
+            {
+                IFileReader reader = BuildReader(type, useEncryption, useSecurity, role);
 
-        Console.WriteLine("5. XML FILE READING + ENCRYPTION + SECURITY (AUTHORIZED, USER ROLE = ADMIN) (v5)");
-        TestXmlEncryptedWithSecurity(xmlFile);
+                var result = reader.Read(path!);
 
-        Console.WriteLine("\n----------------------------------------------\n");
-
-        Console.WriteLine("6. TEXT FILE READING + SECURITY (v6)");
-        TestTextFileWithSecurity(textFile);
-
-        Console.WriteLine("\n----------------------------------------------\n");
-
-        Console.WriteLine("7. JSON FILE READING (v7)");
-        TestJsonFile(jsonFile);
-
-        Console.WriteLine("\n----------------------------------------------\n");
-
-        Console.WriteLine("8. ENCRYPTED JSON FILE READING (v8)");
-
-        TestEncryptedJson(jsonFile);
-
-        Console.WriteLine("\n----------------------------------------------\n");
-
-        Console.WriteLine("9. JSON FILE READING + SECURITY (AUTHORIZED, USER ROLE = ADMIN) (v9)");
-        TestSecuredJson(jsonFile);
-
-        Console.WriteLine("\n----------------------------------------------\n");
+                Console.WriteLine("\n--- OUTPUT ---");
+                Console.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nError: {ex.Message}");
+            }
+        }
     }
 
-    // V1 - Test a simple text file reader
-    static void TestTextFile(string path)
+    /// <summary>
+    /// Builds the appropriate file reader based on user input,
+    /// applying decorators for encryption and role-based security if requested.
+    /// </summary>
+    static IFileReader BuildReader(string? type, bool useEncryption, bool useSecurity, UserRole role)
     {
-        IFileReader reader = new TextFileReader();
-        var result = reader.Read(path);
+        IFileReader reader = type switch
+        {
+            "1" => new TextFileReader(),
+            "2" => new XmlFileReader(),
+            "3" => new JsonFileReader(),
+            _ => throw new Exception("Invalid file type selection.")
+        };
 
-        Console.WriteLine(result);
-    }
-
-    // V2 - Test an xml file reader
-    static void TestXml(string path)
-    {
-        IFileReader reader = new XmlFileReader();
-        var result = reader.Read(path);
-
-        Console.WriteLine(result);
-    }
-
-    // v3 - Text an encrypted text file reader
-    static void TestEncryptedText(string path)
-    {
-        IFileReader reader =
-            new EncryptedFileReader(
-                new TextFileReader(),
+        if (useEncryption)
+        {
+            reader = new EncryptedFileReader(
+                reader,
                 new ReverseEncryptionStrategy());
+        }
 
-        var result = reader.Read(path);
+        if (useSecurity)
+        {
+            reader = new SecureFileReader(reader, role);
+        }
 
-        Console.WriteLine(result);
-    }
-
-    // V4 - Test an xml file with security
-    static void TestXmlWithSecurity(string path)
-    {
-        IFileReader reader =
-            new SecureFileReader(
-                new XmlFileReader(),
-                UserRole.Admin); // Change UserRole to see unauthorized access exception. 
-
-        var result = reader.Read(path);
-
-        Console.WriteLine(result);
-    }
-
-    // V5 - Test an xml encrypted file with security
-    static void TestXmlEncryptedWithSecurity(string path)
-    {
-        IFileReader reader =
-            new SecureFileReader(
-                new EncryptedFileReader(
-                    new XmlFileReader(),
-                    new ReverseEncryptionStrategy()),
-                UserRole.Admin);
-
-        var result = reader.Read(path);
-
-        Console.WriteLine(result);
-    }
-
-    // V6 - Test a text file with security
-    static void TestTextFileWithSecurity(string path)
-    {
-        IFileReader reader =
-        new SecureFileReader(
-            new TextFileReader(),
-            UserRole.Admin); // Change UserRole to see unauthorized access exception. 
-
-        Console.WriteLine(reader.Read(path));
-    }
-
-    // V7 - Test a json file reader
-    static void TestJsonFile(string path)
-    {
-        IFileReader reader = new TextFileReader();
-        var result = reader.Read(path);
-
-        Console.WriteLine(result);
-    }
-
-    // V8 - Test an encrypted json file
-    static void TestEncryptedJson(string path)
-    {
-        IFileReader reader =
-            new EncryptedFileReader(
-                new JsonFileReader(),
-                new ReverseEncryptionStrategy());
-
-        Console.WriteLine(reader.Read(path));
-    }
-
-    // V9 - Test a json file with security
-    static void TestSecuredJson(string path)
-    {
-        IFileReader reader =
-            new SecureFileReader(
-                new JsonFileReader(),
-                UserRole.Admin); // Change UserRole to see unauthorized access exception. 
-
-        Console.WriteLine(reader.Read(path));
+        return reader;
     }
 }
