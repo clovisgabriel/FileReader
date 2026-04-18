@@ -13,6 +13,7 @@ class Program
         string textFile = Path.Combine(basePath, "Files", "textFile.txt");
         string xmlFile = Path.Combine(basePath, "Files", "xmlFile.xml");
         string encryptedFile = Path.Combine(basePath, "Files", "encryptedFile.txt");
+        string jsonFile = Path.Combine(basePath, "Files", "jsonFile.json");
 
         Console.WriteLine("1. TEXT FILE READING (v1)");
         TestTextFile(textFile);
@@ -41,6 +42,11 @@ class Program
 
         Console.WriteLine("6. TEXT + SECURITY (v6)");
         TestTextFileWithSecurity(textFile);
+
+        Console.WriteLine("\n----------------------------------------------\n");
+
+        Console.WriteLine("7. JSON FILE READER (v7)");
+        TestJsonFile(jsonFile);
 
         Console.WriteLine("\n----------------------------------------------\n");
     }
@@ -115,4 +121,12 @@ class Program
         Console.WriteLine(reader.Read(path));
     }
 
+    // V7 - Test a json file reader
+    static void TestJsonFile(string path)
+    {
+        IFileReader reader = new TextFileReader();
+        var result = reader.Read(path);
+
+        Console.WriteLine(result);
+    }
 }
