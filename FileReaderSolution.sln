@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileReader.Core", "FileReader.Core\FileReader.Core.csproj", "{769DFE05-4C0F-4818-98A2-664D7B21C59E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileReader.Cli", "FileReader.Cli\FileReader.Cli.csproj", "{50290BF8-BF19-43E6-A996-A582EB7E048C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{769DFE05-4C0F-4818-98A2-664D7B21C59E}.Release|x64.Build.0 = Release|Any CPU
 		{769DFE05-4C0F-4818-98A2-664D7B21C59E}.Release|x86.ActiveCfg = Release|Any CPU
 		{769DFE05-4C0F-4818-98A2-664D7B21C59E}.Release|x86.Build.0 = Release|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Debug|x64.Build.0 = Debug|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Debug|x86.Build.0 = Debug|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Release|x64.ActiveCfg = Release|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Release|x64.Build.0 = Release|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Release|x86.ActiveCfg = Release|Any CPU
+		{50290BF8-BF19-43E6-A996-A582EB7E048C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
