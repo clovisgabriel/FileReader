@@ -15,7 +15,7 @@ class Program
         string encryptedFile = Path.Combine(basePath, "Files", "encryptedFile.txt");
 
         Console.WriteLine("1. TEXT FILE READING (v1)");
-        TestText(textFile);
+        TestTextFile(textFile);
 
         Console.WriteLine("\n----------------------------------------------\n");
 
@@ -39,10 +39,14 @@ class Program
 
         Console.WriteLine("\n----------------------------------------------\n");
 
+        Console.WriteLine("6. TEXT + SECURITY (v6)");
+        TestTextFileWithSecurity(textFile);
+
+        Console.WriteLine("\n----------------------------------------------\n");
     }
 
     // V1 - Test a simple text file reader
-    static void TestText(string path)
+    static void TestTextFile(string path)
     {
         IFileReader reader = new TextFileReader();
         var result = reader.Read(path);
@@ -72,11 +76,11 @@ class Program
         Console.WriteLine(result);
     }
 
-    // V4 - Test an xml with security
+    // V4 - Test an xml file with security
     static void TestXmlWithSecurity(string path)
     {
         IFileReader reader =
-            new SecureXmlFileReader(
+            new SecureFileReader(
                 new XmlFileReader(),
                 UserRole.Admin); // Change UserRole to see unauthorized access exception. 
 
@@ -89,7 +93,7 @@ class Program
     static void TestXmlEncryptedWithSecurity(string path)
     {
         IFileReader reader =
-            new SecureXmlFileReader(
+            new SecureFileReader(
                 new EncryptedFileReader(
                     new XmlFileReader(),
                     new ReverseEncryptionStrategy()),
@@ -99,4 +103,16 @@ class Program
 
         Console.WriteLine(result);
     }
+
+    // V6 - Test a text file with security
+    static void TestTextFileWithSecurity(string path)
+    {
+        IFileReader reader =
+        new SecureFileReader(
+            new TextFileReader(),
+            UserRole.Admin); // Change UserRole to see unauthorized access exception. 
+
+        Console.WriteLine(reader.Read(path));
+    }
+
 }
